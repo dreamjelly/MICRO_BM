@@ -171,3 +171,18 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+// cd a_test_l2
+// nvcc -O3 -lineinfo cache_scope.cu -o cache_scope
+// # blocks=1..20, shared 模式
+// # test.sh 原始写的是 1..128 + workset 4096KB，但 4096KB > L2(1MB) 会导致拐点不明显
+// # 建议用 512KB workset 复现 Excel 的拐点 pattern；若不明显再试 256KB / 128KB
+// python3 run_acu_cache_scope.py \
+//   --exe ./cache_scope \
+//   --outdir l2_cluster_shared_512KB \
+//   --modes shared \
+//   --blocks 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 \
+//   --workset-kb 512 \
+//   --iters 1 \
+//   --flush-mb 512 \
+//   --smem-kb 160
